@@ -36,8 +36,8 @@ export async function POST(request: Request) {
     }
 
     // In a real app, save to database here
-    console.log("[v0] Created reservation:", reserva)
-    console.log("[v0] Created factura:", factura)
+    console.log("Created reservation:", reserva)
+    console.log("Created factura:", factura)
 
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 1500))
