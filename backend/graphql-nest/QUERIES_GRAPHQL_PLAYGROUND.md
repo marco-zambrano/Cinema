@@ -334,42 +334,9 @@ query GetIncidenciaById {
 }
 ```
 
-**Nota:** Reemplaza `"ID_DE_LA_INCIDENCIA_AQUI"` con un ID real de incidencia.
-
-## 📝 Notas Importantes
-
-1. **Tipos de ID:**
-   - La mayoría de los IDs son de tipo `String!`
-
-2. **Campos Opcionales:**
-   - Algunos campos pueden ser `null` (marcados como `nullable: true` en las entidades)
-   - Los campos relacionados (como `usuario` en `Reserva` o `reserva` en `Factura`) pueden ser opcionales
-
-3. **Variables en GraphQL:**
-   - Puedes usar variables para hacer las queries más dinámicas. Ejemplo:
-   ```graphql
-   query GetPeliculaById($id: String!) {
-     pelicula(id: $id) {
-       id_pelicula
-       titulo
-     }
-   }
-   ```
-   Y en el panel de variables (abajo en GraphQL Playground):
-   ```json
-   {
-     "id": "ID_DE_LA_PELICULA"
-   }
-   ```
-
-4. **Orden de Prueba Recomendado:**
-   - Empieza con queries simples (sin relaciones): `asientos`, `usuarios`, `peliculas`
-   - Luego prueba queries con relaciones: `salas`, `funciones`
-   - Finalmente prueba queries complejas: `reservas`, `facturas`, `incidencias`
-
 ---
 
-## 🚀 Cómo Usar en GraphQL Playground
+## Cómo Usar en GraphQL Playground
 
 1. Abre tu navegador y ve a: `http://localhost:3001/graphql`
 2. Copia una de las queries de arriba
@@ -379,5 +346,3 @@ query GetIncidenciaById {
 6. Revisa los resultados en el panel derecho
 
 ---
-
-**Última actualización:** Basado en el análisis de los resolvers y entidades en `backend/graphql-nest/src/`
