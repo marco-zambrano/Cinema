@@ -43,8 +43,8 @@ export default function AdminPage() {
         ws.onmessage = (event) => {
           try {
             const data: AdminStats = JSON.parse(event.data);
-            console.log("Datos recibidos del WebSocket:", data);
-            console.log("totalSalas:", data.totalSalas);
+            // console.log("Datos recibidos del WebSocket:", data);
+            // console.log("totalSalas:", data.totalSalas);
             setStats(data);
             setIsLoadingStats(false);
           } catch (error) {
@@ -52,10 +52,10 @@ export default function AdminPage() {
           }
         };
 
-        ws.onerror = (error) => {
-          console.error("Error en WebSocket:", error);
-          setIsConnected(false);
-        };
+        // ws.onerror = (error) => {
+        //   console.error("Error en WebSocket:", error);
+        //   setIsConnected(false);
+        // };
 
         ws.onclose = () => {
           console.log("WebSocket desconectado");
@@ -151,31 +151,31 @@ export default function AdminPage() {
             ) : stats ? (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 <StatCard
-                  title="Películas"
+                  title="Películas Disponibles"
                   value={stats.totalMovies}
                   icon={Film}
                   color="from-orange-800 to-orange-600"
                 />
                 <StatCard
-                  title="Reservas"
+                  title="Reservas Generadas"
                   value={stats.totalReservations}
                   icon={Ticket}
                   color="from-orange-800 to-orange-600"
                 />
                 <StatCard
-                  title="Clientes"
+                  title="Clientes Registrados"
                   value={stats.totalCustomers}
                   icon={Users}
                   color="from-orange-800 to-orange-600"
                 />
                 <StatCard
-                  title="Administradores"
+                  title="Administradores Registrados"
                   value={stats.totalAdmins}
                   icon={User}
                   color="from-orange-800 to-orange-600"
                 />
                 <StatCard
-                  title="Funciones"
+                  title="Funciones Programadas"
                   value={stats.totalFunctions}
                   icon={Clock}
                   color="from-orange-800 to-orange-600"
@@ -188,10 +188,8 @@ export default function AdminPage() {
                 />
               </div>
             ) : (
-              <div className="py-20 text-center">
-                <p className="text-lg text-muted-foreground">
-                  Error al cargar estadísticas
-                </p>
+              <div className="flex items-center justify-center py-20">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
               </div>
             )}
           </div>

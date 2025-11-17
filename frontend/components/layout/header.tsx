@@ -44,7 +44,7 @@ export function Header() {
               <Link href="/orders">
                 <Button variant="ghost" className="gap-2">
                   <Ticket className="h-4 w-4" />
-                  <span className="hidden sm:inline">Mis Boletos</span>
+                  <span className="hidden sm:inline">Mis Reservas</span>
                 </Button>
               </Link>
 

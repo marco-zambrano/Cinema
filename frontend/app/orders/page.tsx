@@ -58,6 +58,8 @@ export default function OrdersPage() {
         // Obtener reservas del usuario usando GraphQL
         const reservasData = await reservationService.getByUserIdGraphQL(user.id_usuario, token)
 
+        // console.log("reservasData", reservasData)
+
         // Obtener todas las facturas para buscar las correspondientes
         let facturasMap: Map<string, Factura> = new Map()
         try {
@@ -141,7 +143,10 @@ export default function OrdersPage() {
           }
         })
 
+        
         setOrders(ordersData)
+        const newData = ordersData 
+        console.log("newData", newData)
       } catch (error) {
         console.error('Error al cargar las reservas:', error)
         setOrders([])
@@ -168,8 +173,8 @@ export default function OrdersPage() {
       <main className="flex-1 px-4 py-8 md:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
           <div className="mb-8">
-            <h1 className="mb-2 text-balance text-3xl font-bold text-foreground md:text-4xl">Mis Boletos</h1>
-            <p className="text-pretty text-lg text-muted-foreground">Historial de tus reservas y compras</p>
+            <h1 className="mb-2 text-balance text-3xl font-bold text-foreground md:text-4xl">Mis Reservas</h1>
+            <p className="text-pretty text-lg text-muted-foreground">Historial de tus reservas</p>
           </div>
 
           {isLoadingOrders ? (

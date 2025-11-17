@@ -28,7 +28,7 @@ def get_password_hash(password: str) -> str:
         raise ValueError("Password must be a non-empty string")
     
     # TEMPORARY: Return password as-is for testing
-    print("WARNING: Password hashing is disabled for testing")
+    # print("WARNING: Password hashing is disabled for testing")
     return password
     
     # SECURE VERSION (commented for now)
@@ -65,7 +65,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         return False
     
     # TEMPORARY: Simple string comparison for testing
-    print("WARNING: Using plain text password comparison for testing")
+    # print("WARNING: Using plain text password comparison for testing")
     return plain_password == hashed_password
     
     # SECURE VERSION (commented for now)

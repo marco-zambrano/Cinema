@@ -192,12 +192,8 @@ export default function MovieDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-background">
-        <Header />
-        <main className="flex flex-1 items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-        </main>
-        <Footer />
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     )
   }

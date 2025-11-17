@@ -97,16 +97,8 @@ export default function HomePage() {
   // Mostrar skeleton mientras se carga la autenticación o las películas
   if (isLoading || isLoadingMovies) {
     return (
-      <div className="container py-8">
-        <div className="mb-8">
-          <Skeleton className="h-10 w-64 mb-2" />
-          <Skeleton className="h-6 w-96" />
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {[...Array(8)].map((_, i) => (
-            <Skeleton key={i} className="aspect-[2/3] w-full rounded-lg" />
-          ))}
-        </div>
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     )
   }
@@ -132,7 +124,7 @@ export default function HomePage() {
   return (
     <main className="flex min-h-screen flex-col bg-background">
       <Header />
-      <div className="container py-8 px-4 md:px-6 lg:px-8 w-full">
+      <div className="container py-8 px-4 md:px-6 lg:px-8 w-full mx-auto">
         <div className="mb-8">
           <h1 className="mb-2 text-4xl font-bold tracking-tight text-foreground md:text-5xl">
             Cartelera

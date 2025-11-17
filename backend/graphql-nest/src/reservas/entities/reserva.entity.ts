@@ -11,9 +11,9 @@ export class Reserva {
 
   @Field(() => Usuario, { 
     description: 'Usuario que realizó la reserva',
-    nullable: true  // Make this field optional in GraphQL schema
+    nullable: true 
   })
-  usuario?: Usuario;  // Make this field optional in TypeScript
+  usuario?: Usuario; 
 
   @Field(() => String, { description: 'ID del usuario que realizó la reserva' })
   id_usuario: string;
