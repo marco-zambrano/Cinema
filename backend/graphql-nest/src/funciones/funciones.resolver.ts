@@ -34,6 +34,19 @@ export class FuncionesResolver {
     }
   }
 
+  // ⭐ NUEVA QUERY - ESTE ES TU FIX
+  @Query(() => [Funciones], { name: 'funcionesPorPelicula' })
+  async findByPelicula(
+    @Args('id_pelicula', { type: () => String }) id_pelicula: string
+  ) {
+    try {
+      return await this.funcionesService.findByPelicula(id_pelicula);
+    } catch (error) {
+      console.error(`Error en FuncionesResolver.findByPelicula(${id_pelicula}):`, error);
+      throw error;
+    }
+  }
+
   @ResolveField(() => [Pelicula], { name: 'peliculas' })
   async resolvePeliculas(@Parent() funcion: Funciones): Promise<Pelicula[]> {
     if (!funcion.id_pelicula) {

@@ -125,6 +125,26 @@ export const QUERIES = {
       }
     }
   `,
+
+  FUNCTIONS_BY_MOVIE: `
+    query GetFunctionsByMovie($id_pelicula: String!) {
+      funcionesPorPelicula(id_pelicula: $id_pelicula) {
+        id_funcion
+        fecha_hora
+        precio
+        salas { 
+          id_sala 
+          nombre 
+          capacidad 
+          tipo
+          estado
+          filas 
+          columnas 
+        }
+      }
+    }
+  `,
+
   RESERVATIONS: `
     query GetReservations {
       reservas {

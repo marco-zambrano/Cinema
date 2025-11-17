@@ -33,21 +33,8 @@ export class FuncionesService {
     }
   }
 
-  async findAll(): Promise<Funciones[]> {
-    const funciones = await this.handleRequest<any[]>('/funciones');
-    return funciones.map(funcion => ({
-      id_funcion: String(funcion.id_funcion),
-      fecha_hora: funcion.fecha_hora || new Date().toISOString(),
-      precio: parseFloat(funcion.precio) || 0,
-      id_pelicula: funcion.id_pelicula ? String(funcion.id_pelicula) : undefined,
-      id_sala: funcion.id_sala ? String(funcion.id_sala) : undefined,
-      peliculas: [], // Se resuelve en el resolver
-      salas: [], // Se resuelve en el resolver
-    }));
-  }
-
-  async findOne(id: string): Promise<Funciones> {
-    const funcion = await this.handleRequest<any>(`/funciones/${id}`);
+  // Helper para mapear funciones
+  private mapFuncion(funcion: any): Funciones {
     return {
       id_funcion: String(funcion.id_funcion),
       fecha_hora: funcion.fecha_hora || new Date().toISOString(),
@@ -57,5 +44,26 @@ export class FuncionesService {
       peliculas: [], // Se resuelve en el resolver
       salas: [], // Se resuelve en el resolver
     };
+  }
+
+  async findAll(): Promise<Funciones[]> {
+    const funciones = await this.handleRequest<any[]>('/funciones');
+    return funciones.map(f => this.mapFuncion(f));
+  }
+
+  async findOne(id: string): Promise<Funciones> {
+    const funcion = await this.handleRequest<any>(`/funciones/${id}`);
+    return this.mapFuncion(funcion);
+  }
+
+  // ⭐ NUEVO MÉTODO - Filtra funciones por película
+  async findByPelicula(id_pelicula: string): Promise<Funciones[]> {
+    this.logger.debug(`🎬 Buscando funciones para película: ${id_pelicula}`);
+    
+    const funciones = await this.handleRequest<any[]>(`/funciones?id_pelicula=${id_pelicula}`);
+    
+    this.logger.debug(`✅ Encontradas ${funciones.length} funciones para película ${id_pelicula}`);
+    
+    return funciones.map(f => this.mapFuncion(f));
   }
 }

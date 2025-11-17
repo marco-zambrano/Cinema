@@ -195,26 +195,25 @@ export const functionService = {
     ),
 
   getByMovieId: async (movieId: string, token: string) => {
-    // No hay query por movieId directo en el schema, traemos todas y filtramos
-    const data = await fetchGraphQL<{ funciones: any[] }>({
-      query: QUERIES.FUNCTIONS,
+    // ⭐ USAR LA NUEVA QUERY funcionesPorPelicula
+    const data = await fetchGraphQL<{ funcionesPorPelicula: any[] }>({
+      query: QUERIES.FUNCTIONS_BY_MOVIE, // ⬅️ Nueva query (la agregaremos)
+      variables: { id_pelicula: movieId },
       token,
     });
-    const funciones = (data.funciones || []).filter(
-      (f) =>
-        Array.isArray(f.peliculas) &&
-        f.peliculas.filter((p: any) => p.id_pelicula === movieId)
-    );
-    // Adaptar al contrato del frontend: { id_funcion, fecha_hora, precio, id_pelicula, id_sala }
+    
+    const funciones = data.funcionesPorPelicula || [];
+    
+    // Adaptar al contrato del frontend
     const mapped = funciones.map((f: any) => ({
       id_funcion: f.id_funcion,
       fecha_hora: f.fecha_hora,
-      precio: f.precio,
-      id_pelicula: f.peliculas?.[0]?.id_pelicula ?? movieId,
+      precio: typeof f.precio === 'string' ? parseFloat(f.precio) : f.precio,
+      id_pelicula: movieId,
       id_sala: f.salas?.[0]?.id_sala ?? undefined,
     }));
     
-    console.log('✅ Funciones mapeadas finales:', mapped);
+    console.log(`✅ Encontradas ${mapped.length} funciones para película ${movieId}:`, mapped);
     
     return mapped;
   },

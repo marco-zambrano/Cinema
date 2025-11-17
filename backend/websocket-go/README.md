@@ -88,3 +88,8 @@ El frontend está configurado para conectarse automáticamente al WebSocket. Por
 - Cuando un nuevo cliente se conecta, recibe las estadísticas inmediatamente
 - Si un cliente se desconecta, el servidor lo elimina automáticamente de la lista de clientes
 
+## Ejecución de cada módulo
+- REST: "cd backend"; "cd app"; py -m venv venv" (en caso de no tener la carpeta venv); pip install -r requirements.txt"; "uvicorn app.main:app --reload"
+- Graphql: "cd backend"; "cd graphql-nest"; "npm install"; "npm run start:dev"
+- WebSocket: "go run main.go"
+- Frontend: "npm install -g pnpm" (en caso de no tener pnpm); "cd frontend"; "pnpm install"; "pnpm run dev"

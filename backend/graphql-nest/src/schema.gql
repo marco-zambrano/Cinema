@@ -117,6 +117,7 @@ type Query {
   sala(id: String!): Sala!
   funciones: [Funciones!]!
   funcion(id: String!): Funciones!
+  funcionesPorPelicula(id_pelicula: String!): [Funciones!]!
   reservas: [Reserva!]!
   reserva(id: String!): Reserva!
   reservasPorUsuario(id_usuario: String!): [Reserva!]!
