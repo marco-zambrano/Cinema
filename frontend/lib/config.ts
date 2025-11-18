@@ -46,13 +46,6 @@ export const API_ENDPOINTS = {
     UPDATE: (id: string) => `/asientos/${id}`,
     DELETE: (id: string) => `/asientos/${id}`,
   },
-  INCI: {
-    LIST: '/incidencias',
-    DETAIL: (id: string) => `/incidencias/${id}`,
-    CREATE: '/incidencias',
-    UPDATE: (id: string) => `/facturas/${id}`,
-    DELETE: (id: string) => `/facturas/${id}`,
-  },
   FACTURAS: {
     LIST: '/facturas',
     DETAIL: (id: string) => `/facturas/${id}`,

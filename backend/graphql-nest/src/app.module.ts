@@ -12,7 +12,6 @@ import { FuncionesModule } from './funciones/funciones.module';
 import { ReservasModule } from './reservas/reservas.module';
 import { ReservaAsientoModule } from './reserva-asiento/reserva-asiento.module';
 import { FacturasModule } from './facturas/facturas.module';
-import { IncidenciasModule } from './incidencias/incidencias.module';
 import { HttpModule } from 'src/http/http.module';
 
 @Module({
@@ -31,7 +30,6 @@ import { HttpModule } from 'src/http/http.module';
     ReservasModule,
     ReservaAsientoModule,
     FacturasModule,
-    IncidenciasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

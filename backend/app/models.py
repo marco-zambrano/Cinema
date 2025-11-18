@@ -15,7 +15,6 @@ class Usuario(Base):
     
     # Relaciones
     reservas = relationship("Reserva", back_populates="usuario")
-    incidencias = relationship("Incidencia", back_populates="usuario")
 
 
 class Pelicula(Base):
@@ -117,14 +116,3 @@ class Factura(Base):
     
     # Relaciones
     reserva = relationship("Reserva", back_populates="facturas")
-
-
-class Incidencia(Base):
-    __tablename__ = "incidencia"
-    
-    id_incidencia = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    fecha_generacion = Column(DateTime, nullable=False)
-    id_usuario = Column(UUID(as_uuid=True), ForeignKey("usuario.id_usuario"), nullable=True)
-    
-    # Relaciones
-    usuario = relationship("Usuario", back_populates="incidencias")

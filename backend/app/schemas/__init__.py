@@ -5,7 +5,6 @@ from .funcion import FuncionCreate, FuncionUpdate, FuncionResponse
 from .asiento import AsientoCreate, AsientoUpdate, AsientoResponse
 from .reserva import ReservaCreate, ReservaUpdate, ReservaResponse
 from .factura import FacturaCreate, FacturaUpdate, FacturaResponse
-from .incidencia import IncidenciaCreate, IncidenciaUpdate, IncidenciaResponse
 from .auth import Token, TokenData
 
 __all__ = [
@@ -23,8 +22,6 @@ __all__ = [
     "ReservaCreate", "ReservaUpdate", "ReservaResponse",
     # Factura
     "FacturaCreate", "FacturaUpdate", "FacturaResponse",
-    # Incidencia
-    "IncidenciaCreate", "IncidenciaUpdate", "IncidenciaResponse",
     # Auth
     "Token", "TokenData"
 ]

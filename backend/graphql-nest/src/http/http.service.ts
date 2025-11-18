@@ -6,7 +6,6 @@ import { Sala } from 'src/salas/entities/sala.entity';
 import { Pelicula } from 'src/peliculas/entities/pelicula.entity';
 import { Asiento } from 'src/asientos/entities/asiento.entity';
 import { Reserva } from 'src/reservas/entities/reserva.entity';
-import { Incidencia } from 'src/incidencias/entities/incidencia.entity';
 import { Factura } from 'src/facturas/entities/factura.entity';
 import { Funciones } from 'src/funciones/entities/funcione.entity';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
@@ -107,13 +106,6 @@ export class HttpServices {
   }
   async findOneReserva(id: string): Promise<Reserva> {
     return this.handleRequest<Reserva>(`/reservas/${id}`);
-  }
-  // Incidencias
-  async findAllIncidencias(): Promise<Incidencia[]> {
-    return this.handleRequest<Incidencia[]>('/incidencias');
-  }
-  async findOneIncidencia(id: string): Promise<Incidencia> {
-    return this.handleRequest<Incidencia>(`/incidencias/${id}`);
   }
 
   async findAllFacturas(): Promise<Factura[]> {

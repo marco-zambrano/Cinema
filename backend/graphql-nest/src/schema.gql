@@ -100,12 +100,6 @@ type Factura {
   reserva: Reserva
 }
 
-type Incidencia {
-  id_incidencia: String!
-  fecha_generacion: String!
-  usuarios: [Usuario!]!
-}
-
 type Query {
   asientos: [Asiento!]!
   asiento(id: String!): Asiento!
@@ -124,6 +118,4 @@ type Query {
   asientosPorReserva(id_reserva: String!): [ReservaAsiento!]!
   facturas: [Factura!]!
   factura(id: String!): Factura!
-  incidencias: [Incidencia!]!
-  incidencia(id: String!): Incidencia!
 }

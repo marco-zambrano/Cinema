@@ -10,8 +10,7 @@ from app.routes import (
     asientos,
     reservas,
     reserva_asiento,
-    facturas,
-    incidencias
+    facturas
 )
 
 # Crear aplicación FastAPI
@@ -56,7 +55,6 @@ app.include_router(asientos.router, prefix=settings.API_V1_PREFIX, tags=["Asient
 app.include_router(reservas.router, prefix=settings.API_V1_PREFIX, tags=["Reservas"])
 app.include_router(reserva_asiento.router, prefix=settings.API_V1_PREFIX, tags=["Reservas - Asientos"])
 app.include_router(facturas.router, prefix=settings.API_V1_PREFIX, tags=["Facturas"])
-app.include_router(incidencias.router, prefix=settings.API_V1_PREFIX, tags=["Incidencias"])
 
 # Ruta raíz
 @app.get("/")

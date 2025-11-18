@@ -6,8 +6,7 @@ from . import (
     funciones,
     asientos,
     reservas,
-    facturas,
-    incidencias
+    facturas
 )
 
 __all__ = [
@@ -18,6 +17,5 @@ __all__ = [
     "funciones",
     "asientos",
     "reservas",
-    "facturas",
-    "incidencias"
+    "facturas"
 ]
