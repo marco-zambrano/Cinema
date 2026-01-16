@@ -116,3 +116,33 @@ class Factura(Base):
     
     # Relaciones
     reserva = relationship("Reserva", back_populates="facturas")
+
+
+class Partner(Base):
+    __tablename__ = "partner"
+    
+    id_partner = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(255), nullable=False)
+    webhook_url = Column(String(500), nullable=False)
+    secret = Column(String(255), nullable=False)
+    subscribed_events = Column(Text, nullable=True)  # JSON string
+    is_active = Column(Integer, default=True)  # Boolean
+    created_at = Column(DateTime, nullable=True)
+    
+    # Relaciones
+    webhook_logs = relationship("WebhookLog", back_populates="partner")
+
+
+class WebhookLog(Base):
+    __tablename__ = "webhook_log"
+    
+    id_log = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id_partner = Column(UUID(as_uuid=True), ForeignKey("partner.id_partner"), nullable=True)
+    event_type = Column(String(100), nullable=True)
+    payload = Column(Text, nullable=True)
+    status_code = Column(Integer, nullable=True)
+    response = Column(Text, nullable=True)
+    created_at = Column(DateTime, nullable=True)
+    
+    # Relaciones
+    partner = relationship("Partner", back_populates="webhook_logs")
