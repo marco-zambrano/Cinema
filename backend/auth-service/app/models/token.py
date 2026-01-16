@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey, Text
+from sqlalchemy import Column, String, DateTime, ForeignKey, Text, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from app.database import Base
 import uuid
@@ -13,7 +13,7 @@ class RefreshToken(Base):
     token = Column(Text, unique=True, nullable=False, index=True)
     fecha_creacion = Column(DateTime, default=datetime.utcnow, nullable=False)
     fecha_expiracion = Column(DateTime, nullable=False, index=True)
-    activo = Column(bool, default=True, nullable=False)
+    activo = Column(Boolean, default=True, nullable=False)
     
     def __repr__(self):
         return f"<RefreshToken(id_usuario={self.id_usuario}, activo={self.activo})>"
