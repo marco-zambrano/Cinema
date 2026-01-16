@@ -12,63 +12,31 @@ from app.models import Usuario
 from app.schemas.auth import TokenData
 
 # Configuración de encriptación
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Usar Argon2 - más seguro que bcrypt, sin límite de longitud de contraseña
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 # OAuth2 scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_PREFIX}/auth/login")
 
 def get_password_hash(password: str) -> str:
     """
-    Generate a password hash.
-    
-    NOTE: Temporarily disabled hashing for testing.
-    In production, use the commented code below for secure password hashing.
+    Generate a password hash using Argon2.
+    Argon2 is more secure than bcrypt and has no password length limits.
     """
     if not password or not isinstance(password, str):
         raise ValueError("Password must be a non-empty string")
     
-    # TEMPORARY: Return password as-is for testing
-    # print("WARNING: Password hashing is disabled for testing")
-    return password
-    
-    # SECURE VERSION (commented for now)
-    """
     try:
-        # Bcrypt has a 72 byte limit. If password is too long, hash it first
-        password_bytes = password.encode('utf-8')
-        
-        if len(password_bytes) > 72:
-            print(f"Password too long ({len(password_bytes)} bytes), hashing with SHA-256 first")
-            # Hash with SHA-256 first to reduce length
-            password = hashlib.sha256(password_bytes).hexdigest()
-        
         return pwd_context.hash(password)
         
     except Exception as e:
         print(f"Error hashing password: {str(e)}")
         raise ValueError(f"Error al hashear la contraseña: {str(e)}")
-    """
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
-    Verify a plain password against a stored password.
-    
-    NOTE: Temporarily using plain text comparison for testing.
-    In production, use the commented code below for secure password verification.
-    """
-    if not plain_password or not isinstance(plain_password, str):
-        print("Invalid password type or empty")
-        return False
-    
-    if not hashed_password:
-        print("No password hash provided")
-        return False
-    
-    # TEMPORARY: Simple string comparison for testing
-    # print("WARNING: Using plain text password comparison for testing")
-    return plain_password == hashed_password
-    
-    # SECURE VERSION (commented for now)
+    Verify a plain password against a stored password using Argon2.
+    Argon2 is more secure than bcrypt and has no password length limits.
     """
     try:
         if not plain_password or not isinstance(plain_password, str):
@@ -79,27 +47,12 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
             print("No hashed password provided")
             return False
         
-        password_bytes = plain_password.encode('utf-8')
-        
-        # First try direct verification
-        try:
-            if pwd_context.verify(plain_password, hashed_password):
-                return True
-        except Exception as e:
-            print(f"Direct verification failed: {str(e)}")
-        
-        # If password is long, try with SHA-256 hash
-        if len(password_bytes) > 72:
-            print(f"Password long ({len(password_bytes)} bytes), trying SHA-256 verification")
-            hashed_pw = hashlib.sha256(password_bytes).hexdigest()
-            return pwd_context.verify(hashed_pw, hashed_password)
-        
-        return False
+        return pwd_context.verify(plain_password, hashed_password)
         
     except Exception as e:
         print(f"Error verifying password: {str(e)}")
         return False
-    """
+        return False
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """Crea un token JWT"""

@@ -10,17 +10,33 @@ from app.models.token import RevokedToken
 import uuid
 
 # Configuración de encriptación
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Usar Argon2 - más seguro que bcrypt, sin límite de longitud de contraseña
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 def get_password_hash(password: str) -> str:
-    """Generar hash de contraseña"""
-    return pwd_context.hash(password)
+    """Generar hash de contraseña usando Argon2."""
+    if not password or not isinstance(password, str):
+        raise ValueError("Password must be a non-empty string")
+    
+    try:
+        return pwd_context.hash(password)
+    except Exception as e:
+        print(f"Error hashing password: {str(e)}")
+        raise ValueError(f"Error al hashear la contraseña: {str(e)}")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verificar contraseña contra hash"""
+    """Verificar contraseña contra hash usando Argon2."""
     try:
+        if not plain_password or not isinstance(plain_password, str):
+            return False
+        
+        if not hashed_password:
+            return False
+        
         return pwd_context.verify(plain_password, hashed_password)
-    except Exception:
+        
+    except Exception as e:
+        print(f"Error verifying password: {str(e)}")
         return False
 
 def create_token(
