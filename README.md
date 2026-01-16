@@ -10,63 +10,107 @@ El objetivo del proyecto CINE es ofrecer diferentes peliculas de diferentes gene
 
 El rol de administrador cuenta con un panel donde puede ver en tiempo real usuarios activos, funciones, peliculas, etc.
 
+## 🆕 Arquitectura de Autenticación
+A partir de esta versión, la autenticación se gestiona a través de un **microservicio independiente** (Auth Service) que centraliza:
+- Gestión de usuarios
+- Generación de tokens JWT (access y refresh)
+- Validación de credenciales
+- Rate limiting en login
+- Blacklist de tokens revocados
+
+**Ver documentación completa:**
+- [Guía rápida (5 min)](QUICK_START_AUTH.md)
+- [Resumen de implementación](AUTH_SERVICE_IMPLEMENTATION_SUMMARY.md)
+- [Arquitectura completa](AUTHENTICATION_ARCHITECTURE.md)
+- [Guía de testing](TESTING_GUIDE.md)
+
 ## Lenguajes y Tecnologías utilizadas:
-Python y fastapi, django y uvicorn para el servicio rest
-Go para websocket
-Nest y TypeScript para el graphql
-Next y React para el frontend
-Supabase para base de datos
+
+**Backend:**
+- Python 3.10+, FastAPI, Uvicorn (REST API + Auth Service)
+- Go 1.20+ (WebSocket)
+- NestJS + TypeScript (GraphQL)
+
+**Frontend:**
+- Next.js + React + TypeScript
+
+**Base de Datos:**
+- Supabase (PostgreSQL) - Datos principales
+- SQLite (Auth Service) - Gestión de autenticación
+
+**Herramientas:**
+- pnpm (gestor de dependencias frontend)
+- Git
 
 ## Pre-requisitos:
-    Python 3.10
+    Python 3.10+
     Node.js 18+
     Go 1.20+
     pnpm
     Git
 
-## Cómo ejecutar el REST
+## Cómo ejecutar el servicio completo (recomendado)
 
-Primero se debe entrar al entorno virtual dentro de la carpeta backend:
-    venv/Scripts/activate
-una vez dentro, instalar todas las librerias dentro del requeriments.txt:
-    pip install -r requirements.txt
+**Terminal 1 - Auth Service:**
+```bash
+cd backend/auth-service
+python -m venv venv
+venv/Scripts/activate  # Windows
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8001
+```
+✅ Acceso: http://localhost:8001/api/v1/docs
 
-para ejecutar el rest usar:
-    uvicorn app.main:app
+**Terminal 2 - REST API:**
+```bash
+cd backend/api-rest
+venv/Scripts/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+✅ Acceso: http://localhost:8000/api/v1/docs
 
-generará una url con un puerto. Para poder probar el rest desde SWAGGER se usa /api/v1/docs, quedaría: 
-    http://127.0.0.1:8000/api/v1/docs
+**Terminal 3 - GraphQL:**
+```bash
+cd backend/graphql-nest
+npm install  # Si no se ha hecho
+npm run start:dev
+```
+✅ Acceso: http://localhost:3001/graphql
 
-Uvicorn es el servidor donde correrá la aplicación hecha en FastAPI que contiene todos los endpoints del servicio REST, lógica de negocio, modelos, schemas.
-Swagger es la documentación/interfaz visual de FastAPI para poder probar los endpoints.
+**Terminal 4 - WebSocket:**
+```bash
+cd backend/websocket-go
+go run main.go
+```
+✅ Acceso: ws://localhost:8080/ws
 
-## Cómo ejecutar el graphql
+**Terminal 5 - Frontend:**
+```bash
+cd frontend
+pnpm install  # Si no se ha hecho
+pnpm dev
+```
+✅ Acceso: http://localhost:3000
 
-Para ejecutar el graphql debemos entrar a la carpeta backend y dentro entrar a la carpeta graphql
-Dentro instalaremos las siguientes librerias:
-    npm i @nestjs/graphql @nestjs/apollo @apollo/server @as-integrations/express5 graphql
+---
 
-cuando se instalen las librerias, se ejecuta con el comando:
-    npm run start:dev
+## ⚡ Instrucciones rápidas (versión anterior)
 
-y el rest debe estar activado.
+### Cómo ejecutar el Auth Service (NUEVO)
 
-## Cómo ejecutar el websocket
+Primero ejecuta el servicio de autenticación:
+```bash
+cd backend/auth-service
+python -m venv venv
+venv/Scripts/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8001
+```
 
-Para ejecutar el websocket se debe instalar el lenguaje go en el ordenador desde la pagina web:
-    https://go.dev/doc/install
+Acceder a: http://localhost:8001/api/v1/docs
 
-Instalar el lenguaje
-Entrar a la carpeta backend/websocket y ejecutar el comando:
-    go run main.go
-
-## Cómo ejecutar el frontend
-Cuándo se tenga todo lo anterior en ejecución, entrar a la carpeta frontend
-instalar pnpm de la siguiente forma (si ya se tiene, saltar este paso):
-    npm install -g pnpm
-
-Una vez instalado pnpm, realizar el siguiente comando para instalar las librerias usadas:
-    pnpm install
+### Cómo ejecutar el REST
 
 Cuándo esté en ejecución el frontend, entrar en la url que genera y listo.
 
