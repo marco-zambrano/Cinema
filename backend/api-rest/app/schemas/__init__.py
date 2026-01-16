@@ -1,4 +1,4 @@
-from .usuario import UsuarioCreate, UsuarioUpdate, UsuarioResponse, UsuarioLogin
+from .usuario import UsuarioCreate, UsuarioUpdate, UsuarioResponse
 from .pelicula import PeliculaCreate, PeliculaUpdate, PeliculaResponse
 from .sala import SalaCreate, SalaUpdate, SalaResponse
 from .funcion import FuncionCreate, FuncionUpdate, FuncionResponse
@@ -9,7 +9,7 @@ from .auth import Token, TokenData
 
 __all__ = [
     # Usuario
-    "UsuarioCreate", "UsuarioUpdate", "UsuarioResponse", "UsuarioLogin",
+    "UsuarioCreate", "UsuarioUpdate", "UsuarioResponse",
     # Pelicula
     "PeliculaCreate", "PeliculaUpdate", "PeliculaResponse",
     # Sala

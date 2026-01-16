@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.routes import (
-    auth,
     usuarios,
     peliculas,
     salas,
@@ -46,7 +45,6 @@ else:
     )
 
 # Incluir routers
-app.include_router(auth.router, prefix=settings.API_V1_PREFIX, tags=["Autenticación"])
 app.include_router(usuarios.router, prefix=settings.API_V1_PREFIX, tags=["Usuarios"])
 app.include_router(peliculas.router, prefix=settings.API_V1_PREFIX, tags=["Películas"])
 app.include_router(salas.router, prefix=settings.API_V1_PREFIX, tags=["Salas"])

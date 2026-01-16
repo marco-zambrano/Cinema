@@ -1,5 +1,4 @@
 from . import (
-    auth,
     usuarios,
     peliculas,
     salas,
@@ -10,7 +9,6 @@ from . import (
 )
 
 __all__ = [
-    "auth",
     "usuarios",
     "peliculas",
     "salas",
