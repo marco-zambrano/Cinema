@@ -84,9 +84,12 @@ export default function CheckoutPage() {
       const { checkoutData, seatIds, ticketCount, funcionId } = reservationData
       const { sala, seats } = checkoutData
 
+      console.log(sala, seats, checkoutData, seatIds, ticketCount, funcionId)
       // Paso 1: Obtener el ID del usuario (obtener del perfil si no está disponible)
       let idUsuario = user.id_usuario
       
+      console.log(idUsuario)
+
       // Si el usuario no tiene id_usuario, obtenerlo del perfil
       if (!idUsuario || idUsuario.trim() === '') {
         try {
@@ -111,6 +114,8 @@ export default function CheckoutPage() {
         const allSeats = await seatService.getAll(accessToken)
         // Filtrar solo los asientos de esta sala
         existingSeats = allSeats.filter((s: any) => s.id_sala === sala.id_sala)
+        console.log(existingSeats);
+        
       } catch (error) {
         console.warn("No se pudieron obtener los asientos existentes, continuando...", error)
       }
@@ -141,6 +146,8 @@ export default function CheckoutPage() {
               },
               accessToken
             )
+            console.log(updatedSeat);
+            
             processedSeats.push(updatedSeat || existingSeat)
           } catch (error) {
             console.warn(`No se pudo actualizar el asiento ${existingSeat.id_asiento}, usando el existente`, error)

@@ -12,6 +12,7 @@
  */
 
 import { AUTH_SERVICE_URL } from "./config";
+import type { UserRole } from "./types";
 
 interface LoginRequest {
   correo: string;
@@ -26,7 +27,7 @@ interface LoginResponse {
     id_usuario: string;
     correo: string;
     nombre: string;
-    rol: string;
+    rol: UserRole;
     activo: boolean;
     fecha_creacion: string;
     ultimo_login: string | null;
@@ -37,14 +38,14 @@ interface RegisterRequest {
   correo: string;
   nombre: string;
   password: string;
-  rol?: string;
+  rol?: UserRole;
 }
 
 interface RegisterResponse {
   id_usuario: string;
   correo: string;
   nombre: string;
-  rol: string;
+  rol: UserRole;
   activo: boolean;
   fecha_creacion: string;
   ultimo_login: string | null;
@@ -70,7 +71,7 @@ interface ValidateTokenRequest {
 interface ValidateTokenResponse {
   id_usuario: string;
   correo: string;
-  rol: string;
+  rol: UserRole;
   type: "access" | "refresh";
   exp: number;
   iat: number;
@@ -80,7 +81,7 @@ interface UserProfileResponse {
   id_usuario: string;
   correo: string;
   nombre: string;
-  rol: string;
+  rol: UserRole;
   activo: boolean;
   fecha_creacion: string;
   ultimo_login: string | null;

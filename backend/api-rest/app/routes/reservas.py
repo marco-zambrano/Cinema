@@ -1,17 +1,44 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from typing import List
+from uuid import UUID
+from datetime import datetime
 from app.database import get_db
-from app.models import Reserva
+from app.models import Reserva, Usuario
 from app.schemas import ReservaCreate, ReservaUpdate, ReservaResponse
 from app.utils.dependencies import get_or_404
+from app.utils.auth import get_current_user, TokenData
 
 router = APIRouter()
 
 @router.post("/reservas", response_model=ReservaResponse, status_code=status.HTTP_201_CREATED)
-def create_reserva(reserva: ReservaCreate, db: Session = Depends(get_db)):
+def create_reserva(
+    reserva: ReservaCreate,
+    db: Session = Depends(get_db),
+    current_user: TokenData = Depends(get_current_user)
+):
     """Crear una nueva reserva"""
-    db_reserva = Reserva(**reserva.model_dump())
+
+    user_id = UUID(current_user.id_usuario)
+    existing_user = db.query(Usuario).filter(Usuario.id_usuario == user_id).first()
+    if existing_user is None:
+        nombre = (current_user.correo.split("@")[0] if current_user.correo else "usuario")
+        existing_user = Usuario(
+            id_usuario=user_id,
+            nombre=nombre,
+            correo=current_user.correo,
+            rol=current_user.rol
+        )
+        db.add(existing_user)
+        db.commit()
+        db.refresh(existing_user)
+
+    reserva_data = reserva.model_dump()
+    reserva_data["id_usuario"] = user_id
+    if reserva_data.get("fecha_reserva") is None:
+        reserva_data["fecha_reserva"] = datetime.utcnow()
+
+    db_reserva = Reserva(**reserva_data)
     db.add(db_reserva)
     db.commit()
     db.refresh(db_reserva)

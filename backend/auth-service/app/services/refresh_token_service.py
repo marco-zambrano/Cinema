@@ -45,8 +45,14 @@ def is_refresh_token_valid(db: Session, token: str) -> bool:
     
     if not refresh_token.activo:
         return False
-    
-    if datetime.utcnow() > refresh_token.fecha_expiracion:
+
+    exp = refresh_token.fecha_expiracion
+    now = datetime.utcnow()
+    # Si exp viene con tzinfo (aware), comparar con now aware en el mismo tz
+    if getattr(exp, "tzinfo", None) is not None:
+        now = datetime.now(exp.tzinfo)
+
+    if now > exp:
         return False
     
     return True

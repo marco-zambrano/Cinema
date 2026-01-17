@@ -59,12 +59,12 @@ async function apiRequest<T>(
     }
 
     return await response.json();
-  } catch (error) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error("API Request Error:", {
       url,
       method,
-      error: error instanceof Error ? error.message : "Unknown error",
-      errorObject: error,
+      error: errorMessage,
     });
     throw error;
   }

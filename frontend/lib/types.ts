@@ -1,8 +1,10 @@
+export type UserRole = "cliente" | "admin"
+
 export interface User {
   id_usuario: string
   nombre: string
   correo: string
-  rol: "cliente" | "admin"
+  rol: UserRole
 }
 
 export interface Pelicula {

@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from "react"
-import type { User } from "@/lib/types"
+import type { User, UserRole } from "@/lib/types"
 import { authService } from "@/lib/auth-service"
 import {
   decodeToken,
@@ -33,6 +33,11 @@ const TOKENS_STORAGE = {
   USER: "user",
 }
 
+const normalizeUserRole = (role: unknown): UserRole => {
+  if (typeof role !== "string") return "cliente"
+  return role.toLowerCase() === "admin" ? "admin" : "cliente"
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [accessToken, setAccessToken] = useState<string | null>(null)
@@ -58,7 +63,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           
           if (storedUser) {
             try {
-              setUser(JSON.parse(storedUser))
+              const parsedUser = JSON.parse(storedUser) as any
+              if (parsedUser && typeof parsedUser === "object") {
+                parsedUser.rol = normalizeUserRole(parsedUser.rol)
+              }
+              setUser(parsedUser as User)
             } catch (e) {
               console.error("Failed to parse stored user:", e)
             }
@@ -199,7 +208,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id_usuario: response.user.id_usuario,
         correo: response.user.correo,
         nombre: response.user.nombre,
-        rol: response.user.rol,
+        rol: normalizeUserRole(response.user.rol),
       }
 
       // Guardar tokens y usuario

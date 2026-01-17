@@ -18,12 +18,6 @@ A partir de esta versión, la autenticación se gestiona a través de un **micro
 - Rate limiting en login
 - Blacklist de tokens revocados
 
-**Ver documentación completa:**
-- [Guía rápida (5 min)](QUICK_START_AUTH.md)
-- [Resumen de implementación](AUTH_SERVICE_IMPLEMENTATION_SUMMARY.md)
-- [Arquitectura completa](AUTHENTICATION_ARCHITECTURE.md)
-- [Guía de testing](TESTING_GUIDE.md)
-
 ## Lenguajes y Tecnologías utilizadas:
 
 **Backend:**
@@ -36,7 +30,7 @@ A partir de esta versión, la autenticación se gestiona a través de un **micro
 
 **Base de Datos:**
 - Supabase (PostgreSQL) - Datos principales
-- SQLite (Auth Service) - Gestión de autenticación
+- Supabase (Auth Service) - Gestión de autenticación
 
 **Herramientas:**
 - pnpm (gestor de dependencias frontend)
