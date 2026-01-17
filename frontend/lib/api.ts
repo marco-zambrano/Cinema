@@ -1,4 +1,4 @@
-import { API_BASE_URL, API_ENDPOINTS, getAuthHeaders } from "./config";
+import { API_BASE_URL, API_ENDPOINTS } from "./config";
 import { fetchGraphQL, QUERIES } from "./graphql";
 
 type Method = "GET" | "POST" | "PUT" | "DELETE";
@@ -6,7 +6,7 @@ type Method = "GET" | "POST" | "PUT" | "DELETE";
 // Helper para obtener el token del localStorage automáticamente
 function getStoredToken(): string | null {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem("token");
+  return localStorage.getItem("access_token");
 }
 
 // Función mejorada que usa el token del localStorage si no se proporciona uno
@@ -70,98 +70,7 @@ async function apiRequest<T>(
   }
 }
 
-// Servicios específicos
-export const authService = {
-  login: async (email: string, password: string) => {
-    // El endpoint login-json ahora retorna token + datos del usuario directamente
-    const loginData = await apiRequest<{ 
-      access_token: string; 
-      token_type: string;
-      user: any;
-    }>(
-      "/auth/login-json",
-      "POST",
-      { correo: email, password }
-    );
-    
-    const token = loginData.access_token;
-    const userData = loginData.user;
-    
-    // Si por alguna razón no viene el user en la respuesta, intentar obtenerlo de /usuarios/me
-    if (!userData || !userData.id_usuario) {
-      console.warn("User data not in login response, trying /usuarios/me...");
-      try {
-        const userFromMe = await apiRequest<any>(
-          "/usuarios/me",
-          "GET",
-          undefined,
-          token
-        );
-        
-        return {
-          token,
-          user: userFromMe,
-        };
-      } catch (error) {
-        console.error("Could not fetch user profile from /usuarios/me:", error);
-        // Si todo falla, retornar al menos el token con email básico
-        return {
-          token,
-          user: { correo: email },
-        };
-      }
-    }
-    
-    return {
-      token,
-      user: userData,
-    };
-  },
-
-  register: async (userData: any) => {
-    try {
-      console.log("Sending registration request:", userData);
-
-      const response = await fetch(
-        `${API_BASE_URL}${API_ENDPOINTS.AUTH.REGISTER}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(userData),
-          credentials: "include",
-        }
-      );
-
-      const responseData = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        console.error("Registration failed:", {
-          status: response.status,
-          statusText: response.statusText,
-          responseData,
-        });
-
-        const errorMessage =
-          responseData.detail ||
-          responseData.message ||
-          `Error al registrar el usuario (${response.status})`;
-        throw new Error(errorMessage);
-      }
-
-      console.log("Registration successful:", responseData);
-      return responseData;
-    } catch (error) {
-      console.error("Error in register API call:", error);
-      throw error;
-    }
-  },
-
-  getProfile: (token?: string | null) =>
-    apiRequest<any>("/usuarios/me", "GET", undefined, token),
-};
+// Servicios específicos (sin authService aquí, ya está en lib/auth-service.ts)
 
 export const movieService = {
   getAll: async (token: string) => {

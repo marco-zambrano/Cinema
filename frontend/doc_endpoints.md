@@ -1,10 +1,5 @@
 📂 app/routes/
 
-🔐 auth.py
-  POST   /api/v1/auth/register        → Registrar usuario
-  POST   /api/v1/auth/login           → Login (form-data)
-  POST   /api/v1/auth/login-json      → Login (JSON)
-
 🎬 peliculas.py
   GET    /api/v1/peliculas            → Listar películas
   POST   /api/v1/peliculas            → Crear película
