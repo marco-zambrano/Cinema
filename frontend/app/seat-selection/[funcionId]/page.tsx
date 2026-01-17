@@ -24,7 +24,7 @@ interface FuncionDetails {
 export default function SeatSelectionPage() {
   const params = useParams()
   const router = useRouter()
-  const { user, token } = useAuth()
+  const { user, accessToken } = useAuth()
   const [funcionDetails, setFuncionDetails] = useState<FuncionDetails | null>(null)
   const [seats, setSeats] = useState<Asiento[]>([])
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
@@ -72,7 +72,7 @@ export default function SeatSelectionPage() {
         return
       }
 
-      if (!token) {
+      if (!accessToken) {
         router.push("/login")
         return
       }
@@ -81,7 +81,7 @@ export default function SeatSelectionPage() {
         setIsLoading(true)
         
         // Obtener función con película y sala usando GraphQL
-        const funcionData = await functionService.getByIdGraphQL(funcionId, token)
+        const funcionData = await functionService.getByIdGraphQL(funcionId, accessToken)
         
         if (!funcionData) {
           throw new Error("No se pudo obtener la información de la función")
@@ -133,7 +133,7 @@ export default function SeatSelectionPage() {
         
         // Obtener los asientos ocupados para esta función
         try {
-          const occupiedSeatsData = await functionService.getOccupiedSeats(funcionId, token)
+          const occupiedSeatsData = await functionService.getOccupiedSeats(funcionId, accessToken)
           
           // Crear un mapa de números de asiento ocupados (ahora son strings como "A1", "A2", etc.)
           const occupiedSeatNumbers = new Set<string>()
@@ -173,7 +173,7 @@ export default function SeatSelectionPage() {
     }
 
     fetchFuncionDetails()
-  }, [params.funcionId, token, router])
+  }, [params.funcionId, accessToken, router])
 
   const handleSeatClick = useCallback(
     (seatId: string) => {

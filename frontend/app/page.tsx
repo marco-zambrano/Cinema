@@ -7,7 +7,6 @@ import { MovieCard } from "@/components/movies/movie-card"
 import { MovieFilters } from "@/components/movies/movie-filters"
 import { movieService } from "@/lib/api"
 import type { Pelicula } from "@/lib/types"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { Header } from "@/components/layout/header"
@@ -15,7 +14,7 @@ import { Footer } from "@/components/layout/footer"
 
 export default function HomePage() {
   const router = useRouter()
-  const { token, user, isLoading } = useAuth()
+  const { accessToken, user, isLoading } = useAuth()
   const [movies, setMovies] = useState<Pelicula[]>([])
   const [filteredMovies, setFilteredMovies] = useState<Pelicula[]>([])
   const [isLoadingMovies, setIsLoadingMovies] = useState(true)
@@ -31,7 +30,7 @@ export default function HomePage() {
   // Cargar películas cuando el token esté disponible
   useEffect(() => {
     const fetchMovies = async () => {
-      if (!token) {
+      if (!accessToken) {
         setIsLoadingMovies(false)
         return
       }
@@ -40,7 +39,7 @@ export default function HomePage() {
         setIsLoadingMovies(true)
         setError(null)
         
-        const peliculas = await movieService.getAll(token)
+        const peliculas = await movieService.getAll(accessToken)
         
         // Mapear las películas para asegurar que tengan el formato correcto
         const mappedMovies: Pelicula[] = peliculas.map((pelicula: any) => ({
@@ -68,7 +67,7 @@ export default function HomePage() {
     }
 
     fetchMovies()
-  }, [token])
+  }, [accessToken])
 
   const handleFilter = (filters: { search: string; genre: string; classification: string }) => {
     let filtered = [...movies]

@@ -71,7 +71,7 @@ export async function fetchWithTokenInterceptor(
 
     // Si otro request ya está renovando el token, esperar su resultado
     if (isRefreshing) {
-      return new Promise((resolve, reject) => {
+      return new Promise<Response>((resolve, reject) => {
         addRefreshSubscriber((newToken: string) => {
           const newOptions = {
             ...options,
@@ -99,16 +99,16 @@ export async function fetchWithTokenInterceptor(
       }
 
       // Intentar renovar el token
-      const newToken = await authService.refresh(refreshToken)
-      token = newToken
+      const response = await authService.refresh(refreshToken)
+      token = response.access_token
 
       // Guardar nuevo token
-      localStorage.setItem('access_token', newToken)
+      localStorage.setItem('access_token', response.access_token)
 
       // Notificar a otros subscribers
-      onRefreshed(newToken)
+      onRefreshed(response.access_token)
 
-      config.onTokenRefreshed?.(newToken)
+      config.onTokenRefreshed?.(response.access_token)
 
       console.log('[Interceptor] Token refreshed successfully')
     } catch (error) {
@@ -139,12 +139,12 @@ export async function fetchWithTokenInterceptor(
       if (refreshToken && !isRefreshing) {
         isRefreshing = true
 
-        const newToken = await authService.refresh(refreshToken)
-        localStorage.setItem('access_token', newToken)
-        token = newToken
+        const response = await authService.refresh(refreshToken)
+        localStorage.setItem('access_token', response.access_token)
+        token = response.access_token
 
-        onRefreshed(newToken)
-        config.onTokenRefreshed?.(newToken)
+        onRefreshed(response.access_token)
+        config.onTokenRefreshed?.(response.access_token)
 
         console.log('[Interceptor] Token refreshed proactively')
 
