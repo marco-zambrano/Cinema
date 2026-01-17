@@ -1,8 +1,10 @@
-import { Resolver, Query, Args, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Query, Args, ResolveField, Parent, Context } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
 import { FacturasService } from './facturas.service';
 import { Factura } from './entities/factura.entity';
 import { ReservasService } from '../reservas/reservas.service';
 import { Reserva } from '../reservas/entities/reserva.entity';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @Resolver(() => Factura)
 export class FacturasResolver {
@@ -12,6 +14,7 @@ export class FacturasResolver {
   ) {}
 
   @Query(() => [Factura], { name: 'facturas' })
+  @UseGuards(JwtAuthGuard)
   async findAll() {
     try {
       return await this.facturasService.findAll();
@@ -22,6 +25,7 @@ export class FacturasResolver {
   }
 
   @Query(() => Factura, { name: 'factura' })
+  @UseGuards(JwtAuthGuard)
   async findOne(@Args('id', { type: () => String }) id: string) {
     try {
       return await this.facturasService.findOne(id);

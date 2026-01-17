@@ -104,7 +104,8 @@ type Query {
   asientos: [Asiento!]!
   asiento(id: String!): Asiento!
   usuarios: [Usuario!]!
-  usuario(id: Int!): Usuario!
+  usuario(id: String!): Usuario!
+  miPerfil: Usuario!
   peliculas: [Pelicula!]!
   pelicula(id: String!): Pelicula!
   salas: [Sala!]!
@@ -114,7 +115,7 @@ type Query {
   funcionesPorPelicula(id_pelicula: String!): [Funciones!]!
   reservas: [Reserva!]!
   reserva(id: String!): Reserva!
-  reservasPorUsuario(id_usuario: String!): [Reserva!]!
+  reservasPorUsuario(id_usuario: String): [Reserva!]!
   asientosPorReserva(id_reserva: String!): [ReservaAsiento!]!
   facturas: [Factura!]!
   factura(id: String!): Factura!
