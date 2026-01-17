@@ -181,7 +181,7 @@ class AuthServiceClient {
   /**
    * Cerrar sesión y revocar tokens
    */
-  async logout(refreshToken?: string): Promise<void> {
+  async logout(refreshToken?: string, accessToken?: string): Promise<void> {
     const body: LogoutRequest = {};
     if (refreshToken) {
       body.refresh_token = refreshToken;
@@ -190,7 +190,8 @@ class AuthServiceClient {
     return this.request<void>(
       "/auth/logout",
       "POST",
-      body
+      body,
+      accessToken
     );
   }
 

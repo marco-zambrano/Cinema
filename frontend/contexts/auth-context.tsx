@@ -264,7 +264,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Intentar revocar tokens en el servidor
       if (refreshToken) {
         try {
-          await authService.logout(refreshToken)
+          await authService.logout(refreshToken, accessToken ?? undefined)
           console.log("[Auth] Tokens revoked on server")
         } catch (err) {
           console.warn("[Auth] Failed to revoke tokens on server:", err)
