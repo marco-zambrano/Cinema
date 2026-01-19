@@ -2,13 +2,14 @@ import axios, { AxiosInstance, AxiosError } from 'axios';
 import { Logger } from '../utils/logger';
 
 /**
- * Cliente HTTP para comunicarse con el Backend (Puerto 3002)
+ * Cliente HTTP para comunicarse con el Backend (apunta al REST API local)
+ * El backend REST expone sus rutas bajo el prefijo `/api/v1`.
  */
 export class BackendClient {
   private client: AxiosInstance;
   private logger: Logger;
 
-  constructor(baseURL: string = process.env.BACKEND_URL || 'http://localhost:3002') {
+  constructor(baseURL: string = process.env.BACKEND_URL || 'http://localhost:8000/api/v1') {
     this.logger = new Logger('BackendClient');
     
     this.client = axios.create({
