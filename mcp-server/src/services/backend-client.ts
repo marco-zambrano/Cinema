@@ -151,4 +151,50 @@ export class BackendClient {
       throw new Error(`Error obteniendo función: ${error}`);
     }
   } 
+
+  /**
+   * REPORTES - Crear nuevo reporte
+   */
+
+  async CrearReporte(data: {
+    fechaInicio: string;
+    fechaFin: string;
+    tipo_reporte: string;
+    descripcion_reporte: string;
+    userId: string;
+  }): Promise<any> {
+    try{
+        const response = await this.client.post('/reportes', data);
+        return response.data;
+    }catch (error) {
+      throw new Error(`Error creando reporte: ${error}`);
+    }
+  }
+
+  /**
+   * REPORTES - Listar todos los reportes
+   */
+
+  async ListReportes(data: string): Promise <any>{
+    try{
+        const response = await this.client.get('/reportes');
+        return response.data;
+
+    }catch (error) {
+      throw new Error(`Error listando reportes: ${error}`);
+    }
+  }
+
+  /**
+   * REPORTES - Obtener reporte por ID
+   */
+
+  async ListrarReporteId(id: string): Promise<any>{
+    try{
+        const response = await this.client.get(`/reportes/${id}`);
+        return response.data;
+    } catch (error) {
+        throw new Error(`Error obteniendo reporte: ${error}`);
+    }
+  }    
 }
