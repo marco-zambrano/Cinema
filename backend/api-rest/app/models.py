@@ -2,6 +2,7 @@ from sqlalchemy import Column, String, Numeric, DateTime, ForeignKey, Text, Inte
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from app.database import Base
+from datetime import datetime
 import uuid
 
 class Usuario(Base):
@@ -92,6 +93,7 @@ class Reserva(Base):
     usuario = relationship("Usuario", back_populates="reservas")
     reserva_asientos = relationship("ReservaAsiento", back_populates="reserva")
     facturas = relationship("Factura", back_populates="reserva")
+    payments = relationship("Payment", back_populates="reserva")
 
 
 class ReservaAsiento(Base):
@@ -118,6 +120,24 @@ class Factura(Base):
     reserva = relationship("Reserva", back_populates="facturas")
 
 
+class Payment(Base):
+    __tablename__ = "payment"
+
+    id_payment = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    amount = Column(Numeric(10, 2), nullable=False)
+    currency = Column(String(10), nullable=False, default="USD")
+    status = Column(String(50), nullable=False, default="pending")
+    provider = Column(String(50), nullable=False, default="mock")
+    meta_data = Column(Text, nullable=True)  # renamed to avoid reserved word
+    id_reserva = Column(UUID(as_uuid=True), ForeignKey("reserva.id_reserva"), nullable=True)
+    external_reference = Column(String(100), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relaciones
+    reserva = relationship("Reserva", back_populates="payments")
+
+
 class Partner(Base):
     __tablename__ = "partner"
     
@@ -125,6 +145,8 @@ class Partner(Base):
     name = Column(String(255), nullable=False)
     webhook_url = Column(String(500), nullable=False)
     secret = Column(String(255), nullable=False)
+    # ID del partner emisor en el sistema remoto (para headers en webhooks)
+    remote_partner_id = Column(String(100), nullable=True)
     subscribed_events = Column(Text, nullable=True)  # JSON string
     is_active = Column(Integer, default=True)  # Boolean
     created_at = Column(DateTime, nullable=True)

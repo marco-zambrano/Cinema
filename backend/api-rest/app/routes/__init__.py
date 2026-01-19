@@ -6,7 +6,10 @@ from . import (
     funciones,
     asientos,
     reservas,
-    facturas
+    facturas,
+    payments,
+    partners,
+    webhooks,
 )
 
 __all__ = [
@@ -17,5 +20,8 @@ __all__ = [
     "funciones",
     "asientos",
     "reservas",
-    "facturas"
+    "facturas",
+    "payments",
+    "partners",
+    "webhooks",
 ]

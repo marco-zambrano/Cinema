@@ -11,6 +11,7 @@ from app.routes import (
     reservas,
     reserva_asiento,
     facturas,
+    payments,
     partners,
     webhooks
 )
@@ -57,6 +58,7 @@ app.include_router(asientos.router, prefix=settings.API_V1_PREFIX, tags=["Asient
 app.include_router(reservas.router, prefix=settings.API_V1_PREFIX, tags=["Reservas"])
 app.include_router(reserva_asiento.router, prefix=settings.API_V1_PREFIX, tags=["Reservas - Asientos"])
 app.include_router(facturas.router, prefix=settings.API_V1_PREFIX, tags=["Facturas"])
+app.include_router(payments.router, prefix=settings.API_V1_PREFIX, tags=["Payments"])
 app.include_router(partners.router, prefix=settings.API_V1_PREFIX, tags=["Partners"])
 app.include_router(webhooks.router, prefix=settings.API_V1_PREFIX, tags=["Webhooks"])
 

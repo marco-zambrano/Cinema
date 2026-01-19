@@ -17,6 +17,7 @@ router = APIRouter(prefix="/webhooks", tags=["Webhooks"])
 async def receive_webhook(
     request: Request,
     x_webhook_signature: Optional[str] = Header(None, alias="X-Webhook-Signature"),
+    x_partner_name: Optional[str] = Header(None, alias="X-Partner-Name"),
     db: Session = Depends(get_db)
 ):
     """
@@ -26,6 +27,7 @@ async def receive_webhook(
     
     Headers requeridos:
     - X-Webhook-Signature: sha256=<hex> (firma HMAC del body)
+    - X-Partner-Name: Nombre del partner (opcional, usa el primero si no se especifica)
     """
     # 1. Leer el body completo
     body = await request.body()
@@ -37,22 +39,33 @@ async def receive_webhook(
     except json.JSONDecodeError:
         raise HTTPException(status_code=400, detail="Invalid JSON payload")
     
-    # 3. Validar firma HMAC (necesitamos identificar al partner)
-    # Por simplicidad, aquí asumimos que todos los partners comparten el mismo secret inicial
-    # En producción, deberías tener un header adicional con el partner_id o webhook_url
-    
+    # 3. Validar firma HMAC
     if not x_webhook_signature:
         raise HTTPException(status_code=401, detail="Missing X-Webhook-Signature header")
     
-    # NOTA: En producción, deberías identificar qué partner está enviando el webhook
-    # Aquí usamos el primer partner activo como ejemplo
-    partner = db.query(Partner).filter(Partner.is_active == True).first()
-    
-    if not partner:
-        raise HTTPException(status_code=404, detail="No active partners found")
+    # Identificar al partner (por nombre o usar el primero activo)
+    if x_partner_name:
+        partner = db.query(Partner).filter(
+            Partner.name == x_partner_name,
+            Partner.is_active == True
+        ).first()
+        if not partner:
+            raise HTTPException(status_code=404, detail=f"Partner '{x_partner_name}' not found")
+    else:
+        partner = db.query(Partner).filter(Partner.is_active == True).first()
+        if not partner:
+            raise HTTPException(status_code=404, detail="No active partners found")
     
     # Verificar firma
     is_valid = verify_hmac_signature(body, x_webhook_signature, partner.secret)
+    
+    # DEBUG: Imprimir información para debuggear
+    print(f"[DEBUG] Partner: {partner.name}")
+    print(f"[DEBUG] Secret: {partner.secret}")
+    print(f"[DEBUG] Body recibido: {body_str}")
+    print(f"[DEBUG] Firma recibida: {x_webhook_signature}")
+    print(f"[DEBUG] Firma esperada: {generate_hmac_signature(body, partner.secret)}")
+    print(f"[DEBUG] ¿Es válida?: {is_valid}")
     
     if not is_valid:
         # Log intento fallido
@@ -132,9 +145,9 @@ async def send_webhook_to_partners(
                 except:
                     pass
             
-            # Preparar payload
+            # Preparar payload: serializar de forma determinista (JSON compacto)
             payload = webhook_data.dict()
-            payload_json = json.dumps(payload)
+            payload_json = json.dumps(payload, separators=(",",":"))
             
             # Generar firma HMAC
             signature = generate_hmac_signature(payload_json, partner.secret)
@@ -143,9 +156,12 @@ async def send_webhook_to_partners(
             try:
                 response = await client.post(
                     partner.webhook_url,
-                    json=payload,
+                    content=payload_json,  # Enviar exactamente los bytes firmados
                     headers={
                         "X-Webhook-Signature": signature,
+                        # Identificador del partner emisor esperado por el sistema remoto
+                        # Si existe remote_partner_id, se envía. En su defecto, usamos nuestro id local.
+                        "X-Partner-Id": str(partner.remote_partner_id or partner.id_partner),
                         "Content-Type": "application/json"
                     }
                 )
