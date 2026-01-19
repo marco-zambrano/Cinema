@@ -132,4 +132,22 @@ export class BackendClient {
       return false;
     }
   }
+
+  async validarDisponibilidadSala(functionId: string): Promise<number> {
+    try {
+      const response = await this.client.get(`/funciones/${functionId}/disponibilidad`);
+      return response.data.asientosDisponibles;
+    } catch (error) {
+      throw new Error(`Error validando disponibilidad de sala: ${error}`);
+    }
+  }
+
+  async obtenerFuncionPorId(functionId: string): Promise<any> {
+    try {
+      const response = await this.client.get(`/funciones/${functionId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Error obteniendo función: ${error}`);
+    }
+  } 
 }
