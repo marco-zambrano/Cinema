@@ -27,3 +27,5 @@ class WebhookPayload(BaseModel):
     event: str = Field(..., description="Tipo de evento: order.created, payment.completed, etc")
     data: dict = Field(..., description="Datos del evento")
     timestamp: Optional[str] = Field(default=None, description="Timestamp del evento")
+    class Config:
+        exclude_none = True
