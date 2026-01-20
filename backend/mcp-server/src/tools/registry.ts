@@ -11,6 +11,10 @@ import {
   crearReservaTool, 
   ejecutarCrearReserva 
 } from '../tools/crear-reserva.tool';
+import { 
+  CrearReporteTool, 
+  exCrearReporteTool 
+} from '../tools/crear-reporte.tool';
 
 /**
  * Registro centralizado de todas las Tools disponibles
@@ -23,6 +27,7 @@ export class ToolRegistry {
     this.registerTool(BuscarPeliculaTool, ejectuarBuscarPeliculaTool);
     this.registerTool(ValidarDisponibilidadSalaTool, exValidarDisponbilidadSalaTool);
     this.registerTool(crearReservaTool, ejecutarCrearReserva);
+    this.registerTool(CrearReporteTool, exCrearReporteTool);
   }
 
   /**
