@@ -5,6 +5,10 @@ from . import (
     funciones,
     asientos,
     reservas,
+    facturas,
+    payments,
+    partners,
+    webhooks,
     reserva_asiento,
     facturas
 )
@@ -16,6 +20,10 @@ __all__ = [
     "funciones",
     "asientos",
     "reservas",
+    "facturas",
+    "payments",
+    "partners",
+    "webhooks",
     "reserva_asiento",
     "facturas"
 ]
