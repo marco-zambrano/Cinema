@@ -39,16 +39,16 @@ export async function exValidarDisponbilidadSalaTool(params: {functionId: string
             };
         }
 
-        const disponible = await backendClient.validarDisponibilidadSala(params.functionId);
+        const asientosDisponibles = await backendClient.validarDisponibilidadSala(params.functionId);
 
-        if(disponible){
-            const funciones = await backendClient.obtenerFuncionPorId(params.functionId);
-            const salaId = funciones?.salaId || 'desconocida';
+        if(asientosDisponibles > 0){
+            const funcion = await backendClient.obtenerFuncionPorId(params.functionId);
+            const salaId = funcion?.id_sala || funcion?.sala?.id_sala || 'desconocida';
 
             return {
                 content: [{
                     type: 'text',
-                    text: `La sala ${salaId} tiene asientos disponibles para la función ${params.functionId}.`,
+                    text: `La sala ${salaId} tiene ${asientosDisponibles} asientos disponibles para la función ${params.functionId}.`,
                 }],
             };
         } else {
