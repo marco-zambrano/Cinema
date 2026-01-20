@@ -35,7 +35,7 @@ interface OrderWithDetails extends Reserva {
 
 export default function OrdersPage() {
   const router = useRouter()
-  const { user, isLoading, token } = useAuth()
+  const { user, isLoading, accessToken } = useAuth()
   const [orders, setOrders] = useState<OrderWithDetails[]>([])
   const [isLoadingOrders, setIsLoadingOrders] = useState(true)
 
@@ -47,7 +47,7 @@ export default function OrdersPage() {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      if (!user || !token || !user.id_usuario) {
+      if (!user || !accessToken || !user.id_usuario) {
         setIsLoadingOrders(false)
         return
       }
@@ -56,14 +56,14 @@ export default function OrdersPage() {
         setIsLoadingOrders(true)
 
         // Obtener reservas del usuario usando GraphQL
-        const reservasData = await reservationService.getByUserIdGraphQL(user.id_usuario, token)
+        const reservasData = await reservationService.getByUserIdGraphQL(user.id_usuario, accessToken)
 
         // console.log("reservasData", reservasData)
 
         // Obtener todas las facturas para buscar las correspondientes
         let facturasMap: Map<string, Factura> = new Map()
         try {
-          const facturas = await facturaService.getAll(token)
+          const facturas = await facturaService.getAll(accessToken)
           facturas.forEach((factura: Factura) => {
             if (factura.id_reserva) {
               facturasMap.set(factura.id_reserva, factura)
@@ -156,7 +156,7 @@ export default function OrdersPage() {
     }
 
     fetchOrders()
-  }, [user, token, router])
+  }, [user, accessToken, router])
 
   if (isLoading || !user) {
     return (

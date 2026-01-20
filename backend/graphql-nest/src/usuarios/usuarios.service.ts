@@ -54,4 +54,15 @@ export class UsuariosService {
       rol: usuario.rol
     };
   }
+
+  async findByEmail(email: string): Promise<Usuario> {
+    const usuario = await this.handleRequest<any>(`/usuarios/email/${encodeURIComponent(email)}`);
+    return {
+      id_usuario: usuario.id_usuario,
+      nombre: usuario.nombre,
+      correo: usuario.correo,
+      password: usuario.password,
+      rol: usuario.rol
+    };
+  }
 }

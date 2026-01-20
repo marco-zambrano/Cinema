@@ -4,7 +4,7 @@ from typing import List
 from app.database import get_db
 from app.models import Usuario
 from app.schemas import UsuarioUpdate, UsuarioResponse
-from app.services.auth_service import get_current_active_user, get_password_hash
+from app.services.auth_service import get_current_active_user
 from app.utils.dependencies import get_or_404
 
 router = APIRouter()
@@ -44,15 +44,18 @@ def update_usuario(
     db: Session = Depends(get_db),
     current_user: Usuario = Depends(get_current_active_user)
 ):
-    """Actualizar un usuario"""
+    """Actualizar un usuario (excepto contraseña - usar auth-service para eso)"""
     usuario = get_or_404(db, Usuario, Usuario.id_usuario, id_usuario, "usuario")
     
-    # Actualizar campos
+    # Actualizar campos (excluyendo password que debe manejarse en auth-service)
     update_data = usuario_update.model_dump(exclude_unset=True)
     
-    # Si se actualiza la contraseña, hashearla
+    # No permitir actualizar contraseña desde aquí
     if "password" in update_data:
-        update_data["password"] = get_password_hash(update_data["password"])
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Para cambiar la contraseña, usa el endpoint de auth-service"
+        )
     
     for field, value in update_data.items():
         setattr(usuario, field, value)

@@ -5,10 +5,14 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     # Database
     DATABASE_URL: str    
-    # JWT
+    # JWT - Compartida con Auth Service para validación local
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    
+    # Auth Service
+    AUTH_SERVICE_URL: str = "http://localhost:8001"
+    
     # CORS
     # Configuración para demo/presentación - permite todos los orígenes
     FRONTEND_URL: str = "http://localhost:3000"

@@ -13,16 +13,10 @@ class UsuarioBase(BaseModel):
 class UsuarioCreate(UsuarioBase):
     password: str = Field(..., min_length=6)
 
-# Schema para login
-class UsuarioLogin(BaseModel):
-    correo: EmailStr
-    password: str
-
-# Schema para actualizar usuario
+# Schema para actualizar usuario (sin password - manejado por auth-service)
 class UsuarioUpdate(BaseModel):
     nombre: Optional[str] = Field(None, min_length=1, max_length=255)
     correo: Optional[EmailStr] = None
-    password: Optional[str] = Field(None, min_length=6)
     rol: Optional[str] = Field(None, max_length=50)
 
 # Schema para respuesta

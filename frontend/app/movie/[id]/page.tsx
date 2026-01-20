@@ -18,7 +18,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 export default function MovieDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { token } = useAuth()
+  const { accessToken } = useAuth()
   const [movie, setMovie] = useState<Pelicula | null>(null)
   const [funciones, setFunciones] = useState<Funcion[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -99,7 +99,7 @@ export default function MovieDetailPage() {
         return
       }
 
-      if (!token) {
+      if (!accessToken) {
         setError('Debes iniciar sesión para ver los detalles de la película')
         setIsLoading(false)
         return
@@ -110,10 +110,10 @@ export default function MovieDetailPage() {
         setError(null)
         
         // Cargar película primero (secuencial para evitar conexiones simultáneas)
-        const pelicula = await movieService.getById(movieId, token)
+        const pelicula = await movieService.getById(movieId, accessToken)
         
         // Luego cargar funciones (después de que la primera petición termine)
-        const funcionesData = await functionService.getByMovieId(movieId, token)
+        const funcionesData = await functionService.getByMovieId(movieId, accessToken)
 
         const example = funcionesData
         console.log(example)
@@ -164,7 +164,7 @@ export default function MovieDetailPage() {
     }
 
     fetchMovie()
-  }, [params.id, token])
+  }, [params.id, accessToken])
 
   // Efecto para filtrar funciones cuando se selecciona una fecha
   useEffect(() => {

@@ -1,4 +1,5 @@
-import { Resolver, Query, Args, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Query, Args, ResolveField, Parent, Context } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
 import { ReservasService } from './reservas.service';
 import { Reserva } from './entities/reserva.entity';
 import { PeliculasService } from '../peliculas/peliculas.service';
@@ -6,6 +7,7 @@ import { FuncionesService } from '../funciones/funciones.service';
 import { Pelicula } from '../peliculas/entities/pelicula.entity';
 import { Funciones } from '../funciones/entities/funcione.entity';
 import { Asiento } from '../asientos/entities/asiento.entity';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 @Resolver(() => Reserva)
 export class ReservasResolver {
@@ -16,6 +18,7 @@ export class ReservasResolver {
   ) {}
 
   @Query(() => [Reserva], { name: 'reservas' })
+  @UseGuards(JwtAuthGuard)
   async findAll() {
     try {
       return await this.reservasService.findAll();
@@ -26,6 +29,7 @@ export class ReservasResolver {
   }
 
   @Query(() => Reserva, { name: 'reserva' })
+  @UseGuards(JwtAuthGuard)
   async findOne(@Args('id', { type: () => String }) id: string) {
     try {
       return await this.reservasService.findOne(id);
@@ -36,11 +40,16 @@ export class ReservasResolver {
   }
 
   @Query(() => [Reserva], { name: 'reservasPorUsuario' })
-  async findByUsuario(@Args('id_usuario', { type: () => String }) id_usuario: string) {
+  @UseGuards(JwtAuthGuard)
+  async findByUsuario(@Context() context: any, @Args('id_usuario', { type: () => String, nullable: true }) id_usuario?: string) {
     try {
-      return await this.reservasService.findByUsuario(id_usuario);
+      const userId = id_usuario || context.user?.sub;
+      if (!userId) {
+        throw new Error('Usuario no autenticado');
+      }
+      return await this.reservasService.findByUsuario(userId);
     } catch (error) {
-      console.error(`Error en ReservasResolver.findByUsuario(${id_usuario}):`, error);
+      console.error(`Error en ReservasResolver.findByUsuario:`, error);
       throw error;
     }
   }

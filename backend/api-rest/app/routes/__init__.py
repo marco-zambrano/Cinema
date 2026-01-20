@@ -1,5 +1,4 @@
 from . import (
-    auth,
     usuarios,
     peliculas,
     salas,
@@ -10,10 +9,11 @@ from . import (
     payments,
     partners,
     webhooks,
+    reserva_asiento,
+    facturas
 )
 
 __all__ = [
-    "auth",
     "usuarios",
     "peliculas",
     "salas",
@@ -24,4 +24,6 @@ __all__ = [
     "payments",
     "partners",
     "webhooks",
+    "reserva_asiento",
+    "facturas"
 ]

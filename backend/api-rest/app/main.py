@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.routes import (
-    auth,
     usuarios,
     peliculas,
     salas,
@@ -29,27 +28,38 @@ app = FastAPI(
 # Configurar CORS
 # Configurado para demo/presentación - permite todos los orígenes
 origins_list = settings.origins_list
+
+def _normalize_origin(origin: str) -> str:
+    return origin.rstrip("/")
+
 if "*" in origins_list:
-    # Para permitir todos los orígenes en demo/presentación
+    # Con credentials=True, no es válido responder con "*" como allow-origin.
+    # En dev, permitir explícitamente el frontend.
+    allow_origins = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        _normalize_origin(settings.FRONTEND_URL),
+    ]
+    allow_origins = list(dict.fromkeys([o for o in allow_origins if o]))
     app.add_middleware(
         CORSMiddleware,
-        allow_origin_regex=r".*",  # Permite todos los orígenes
+        allow_origins=allow_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 else:
     # Para desarrollo/producción con orígenes específicos
+    allow_origins = list(dict.fromkeys([_normalize_origin(o) for o in origins_list if o]))
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=origins_list,
+        allow_origins=allow_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
 # Incluir routers
-app.include_router(auth.router, prefix=settings.API_V1_PREFIX, tags=["Autenticación"])
 app.include_router(usuarios.router, prefix=settings.API_V1_PREFIX, tags=["Usuarios"])
 app.include_router(peliculas.router, prefix=settings.API_V1_PREFIX, tags=["Películas"])
 app.include_router(salas.router, prefix=settings.API_V1_PREFIX, tags=["Salas"])

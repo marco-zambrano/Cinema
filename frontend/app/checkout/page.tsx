@@ -12,7 +12,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import type { Pelicula, Funcion, Sala, Asiento } from "@/lib/types"
 import { Calendar, Clock, MapPin, CreditCard, Armchair, CheckCircle2, AlertCircle } from "lucide-react"
-import { seatService, reservationService, authService, facturaService } from "@/lib/api"
+import { seatService, reservationService, facturaService } from "@/lib/api"
+import { authService } from "@/lib/auth-service"
 
 interface ReservationData {
   funcionId: string
@@ -28,7 +29,7 @@ interface ReservationData {
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const { user, token } = useAuth()
+  const { user, accessToken } = useAuth()
   const [reservationData, setReservationData] = useState<ReservationData | null>(null)
   const [paymentMethod, setPaymentMethod] = useState<string>("credit-card")
   const [isProcessing, setIsProcessing] = useState(false)
@@ -71,7 +72,7 @@ export default function CheckoutPage() {
   // Ya no necesitamos calculateSeatNumber porque numero ahora es un string como "A1", "A2", etc.
 
   const handleConfirmPayment = async () => {
-    if (!reservationData || !user || !token) {
+    if (!reservationData || !user || !accessToken) {
       setError("No hay información suficiente para procesar el pago")
       return
     }
@@ -83,15 +84,18 @@ export default function CheckoutPage() {
       const { checkoutData, seatIds, ticketCount, funcionId } = reservationData
       const { sala, seats } = checkoutData
 
+      console.log(sala, seats, checkoutData, seatIds, ticketCount, funcionId)
       // Paso 1: Obtener el ID del usuario (obtener del perfil si no está disponible)
       let idUsuario = user.id_usuario
       
+      console.log(idUsuario)
+
       // Si el usuario no tiene id_usuario, obtenerlo del perfil
       if (!idUsuario || idUsuario.trim() === '') {
         try {
-          const profile = await authService.getProfile(token)
+          const profile = await authService.getProfile(accessToken)
           console.log("profile", profile)
-          idUsuario = profile.id_usuario || profile.id || ''
+          idUsuario = profile.id_usuario || ''
           
           if (!idUsuario || idUsuario.trim() === '') {
             throw new Error("No se pudo obtener el ID del usuario desde el perfil")
@@ -107,9 +111,11 @@ export default function CheckoutPage() {
       // Paso 2: Obtener todos los asientos de la sala para verificar cuáles existen
       let existingSeats: any[] = []
       try {
-        const allSeats = await seatService.getAll(token)
+        const allSeats = await seatService.getAll(accessToken)
         // Filtrar solo los asientos de esta sala
         existingSeats = allSeats.filter((s: any) => s.id_sala === sala.id_sala)
+        console.log(existingSeats);
+        
       } catch (error) {
         console.warn("No se pudieron obtener los asientos existentes, continuando...", error)
       }
@@ -138,8 +144,10 @@ export default function CheckoutPage() {
               {
                 estado: "ocupado",
               },
-              token
+              accessToken
             )
+            console.log(updatedSeat);
+            
             processedSeats.push(updatedSeat || existingSeat)
           } catch (error) {
             console.warn(`No se pudo actualizar el asiento ${existingSeat.id_asiento}, usando el existente`, error)
@@ -154,7 +162,7 @@ export default function CheckoutPage() {
                 estado: "ocupado",
                 id_sala: sala.id_sala,
               },
-              token
+              accessToken
             )
             processedSeats.push(createdSeat)
           } catch (error) {
@@ -181,7 +189,7 @@ export default function CheckoutPage() {
           total: total,
           fecha_reserva: fechaReserva,
         },
-        token
+        accessToken
       )
 
       // Paso 5: Vincular los asientos con la reserva (crear relaciones en reserva_asiento)
@@ -202,7 +210,7 @@ export default function CheckoutPage() {
           await reservationService.addSeat(
             reservation.id_reserva,
             seatId,
-            token
+            accessToken
           )
         } catch (error: any) {
           // Si el error es que el asiento ya está en la reserva, continuar
@@ -245,7 +253,7 @@ export default function CheckoutPage() {
             metodo_pago: metodoPagoDescriptivo,
             id_reserva: reservation.id_reserva,
           },
-          token
+          accessToken
         )
         console.log("Factura creada exitosamente:", factura)
       } catch (error) {

@@ -1,6 +1,9 @@
 // URL base de la API REST de FastAPI
 export const API_BASE_URL = 'http://localhost:8000/api/v1';
 
+// URL del Auth Service (Microservicio independiente)
+export const AUTH_SERVICE_URL = 'http://localhost:8001/api/v1';
+
 // URL del servidor WebSocket (Go)
 export const WEBSOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'ws://localhost:8080/ws';
 
