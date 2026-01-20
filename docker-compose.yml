@@ -1,0 +1,67 @@
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n-cinema
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      # Variables de entorno básicas
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=admin123
+      
+      # Configuración del host
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      
+      # URL base de webhooks
+      - WEBHOOK_URL=http://localhost:5678
+      
+      # Variables de entorno para conectar con tus servicios
+      - API_REST_URL=http://host.docker.internal:8000/api/v1
+      - API_AUTH_URL=http://host.docker.internal:8001/api/v1
+      - WEBSOCKET_URL=ws://host.docker.internal:8080/ws
+      - GRAPHQL_URL=http://host.docker.internal:3001/graphql
+      - WEBHOOK_URL=https://unthanked-erysipelatous-fae.ngrok-free.dev/workflow/hNmuK5P_rCfxYEVp9Dm_k
+      
+      # Configuración de ejecución
+      - EXECUTIONS_PROCESS=main
+      - EXECUTIONS_DATA_SAVE_ON_ERROR=all
+      - EXECUTIONS_DATA_SAVE_ON_SUCCESS=all
+      - EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS=true
+      
+      # Configuración de telemetría (opcional, desactivar si no quieres)
+      - N8N_DIAGNOSTICS_ENABLED=true
+      
+      # Configuración de emails (para notificaciones)
+      # Descomenta y configura si tienes un servidor SMTP
+      # - N8N_EMAIL_MODE=smtp
+      # - N8N_SMTP_HOST=smtp.gmail.com
+      # - N8N_SMTP_PORT=587
+      # - N8N_SMTP_USER=your-email@gmail.com
+      # - N8N_SMTP_PASS=your-password
+      # - N8N_SMTP_SENDER=your-email@gmail.com
+      
+    volumes:
+      # Persistencia de datos de n8n
+      - n8n_data:/home/node/.n8n
+      # Persistencia de workflows exportados (opcional)
+      - ./n8n-workflows:/data/workflows
+    networks:
+      - cinema-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  n8n_data:
+    driver: local
+
+networks:
+  cinema-network:
+    driver: bridge
